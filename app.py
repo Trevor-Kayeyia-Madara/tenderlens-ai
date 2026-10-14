@@ -27,8 +27,6 @@ st.markdown(
     TenderLens makes Kenya's OCDS procurement data accessible to small suppliers, citizens,
     and civil society organizations. Find tender opportunities, track awards, and understand
     public spending patterns.
-
-    *Built for the Agentic AI for Africa Innovation Challenge*
     """
 )
 
