@@ -229,7 +229,6 @@ If you use TenderLens in your work, please cite:
 
 ```
 TenderLens: Agentic AI for Kenya's Public Procurement Transparency
-Agentic AI for Africa Innovation Challenge 2024
 ```
 
 ## Contact
