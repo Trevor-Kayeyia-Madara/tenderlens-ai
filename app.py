@@ -22,6 +22,10 @@ st.markdown("""
     h3 {
         color: #1f77b4;
     }
+    /* Hide the top right menu */
+    .stApp [role="toolbar"] {
+        visibility: hidden;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -32,6 +36,7 @@ logger = logging.getLogger("tenderlens_ui")
 st.set_page_config(
     page_title="TenderLens - Kenya's Public Procurement Portal",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
 
 st.markdown(
