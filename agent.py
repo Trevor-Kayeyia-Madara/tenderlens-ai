@@ -8,8 +8,7 @@ from datetime import datetime
 from typing import Any, Optional
 
 from mcp import ClientSession, StdioServerParameters
-from pydantic_ai import Agent, RunContext
-from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai import Agent
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("tenderlens_agent")
@@ -27,15 +26,14 @@ class TenderLensAgent:
         # Set GROQ_API_KEY environment variable, or use placeholder
         groq_api_key = os.getenv("GROQ_API_KEY", "")
         if groq_api_key:
-            self.model = OpenAIModel(
-                "groq/llama-3.3-70b-versatile",
-                base_url="https://api.groq.com/openai/v1",
-                api_key=groq_api_key,
-            )
+            # Use OpenAI-compatible model via Groq
+            self.model = "openai:groq/llama-3.3-70b-versatile"
+            os.environ["OPENAI_API_KEY"] = groq_api_key
+            os.environ["OPENAI_BASE_URL"] = "https://api.groq.com/openai/v1"
         else:
             # Fallback to local model if no API key
             logger.warning("GROQ_API_KEY not set, using local model placeholder")
-            self.model = "qwen2.5:7b"  # Will fail without Ollama, used as placeholder
+            self.model = "ollama:qwen2.5:7b"  # Will fail without Ollama, used as placeholder
 
     async def connect_mcp(self) -> None:
         """Connect to the custom MCP server."""
