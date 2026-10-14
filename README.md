@@ -29,6 +29,8 @@ TenderLens uses a multi-agent architecture with MCP (Model Context Protocol) too
 
 ## Setup / Installation Instructions
 
+### Option 1: Local Deployment (Ollama)
+
 ```bash
 # Clone the repository
 git clone https://github.com/Trevor-Kayeyia-Madara/tenderlens-ai.git
@@ -44,7 +46,35 @@ ollama pull qwen2.5:7b
 
 # Start Ollama server
 ollama serve
+
+# Run the app
+streamlit run app.py
 ```
+
+### Option 2: Cloud Deployment (Groq - Free)
+
+```bash
+# Clone the repository
+git clone https://github.com/Trevor-Kayeyia-Madara/tenderlens-ai.git
+cd tenderlens-ai
+
+# Install dependencies
+pip install -e .
+
+# Get a free Groq API key at https://console.groq.com/keys
+# Set environment variable
+export GROQ_API_KEY="your-api-key-here"
+
+# Run the app
+streamlit run app.py
+```
+
+Or deploy to Streamlit Cloud:
+1. Fork/clone the repository
+2. Go to https://share.streamlit.io
+3. Connect your GitHub repo
+4. Add `GROQ_API_KEY` in the app secrets
+5. Deploy
 
 ## Usage Instructions
 
@@ -84,7 +114,9 @@ Then open `http://localhost:8501` in your browser.
 - **Orchestration**: Pydantic AI
 - **MCP**: Model Context Protocol SDK
 - **Database**: SQLite with FTS5 extension
-- **LLM**: Qwen 2.5 7B (via Ollama for local inference)
+- **LLM**: 
+  - Local: Qwen 2.5 7B (via Ollama)
+  - Cloud: Llama 3.3 70B (via Groq, free)
 - **HTTP**: httpx with tenacity for retry logic
 - **Data**: pandas for DataFrame operations, jsonschema for OCDS validation
 - **UI**: Streamlit for demonstration dashboard
@@ -99,7 +131,8 @@ Then open `http://localhost:8501` in your browser.
 
 ### LLMs
 
-- **Primary**: Qwen 2.5 7B (open-weights) for all core operations—ensures procurement data stays in-country
+- **Local**: Qwen 2.5 7B (open-weights via Ollama) for in-country data processing
+- **Cloud**: Llama 3.3 70B (via Groq, free API) for global deployment
 - **Secondary**: GPT-4o for synthetic test data generation only (demonstration purposes)
 
 ### Memory

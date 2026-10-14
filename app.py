@@ -3,6 +3,7 @@
 import asyncio
 import json
 import logging
+import os
 from datetime import datetime
 
 import streamlit as st
@@ -10,6 +11,17 @@ from agent import TenderLensAgent
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("tenderlens_ui")
+
+# Sidebar for API key configuration
+st.sidebar.header("Configuration")
+groq_api_key = st.sidebar.text_input(
+    "Groq API Key (optional)",
+    type="password",
+    help="Get a free API key at https://console.groq.com/keys. Leave empty to use local Ollama."
+)
+
+if groq_api_key:
+    os.environ["GROQ_API_KEY"] = groq_api_key
 
 # Configure Streamlit page
 st.set_page_config(

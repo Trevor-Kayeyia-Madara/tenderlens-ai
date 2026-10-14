@@ -3,11 +3,13 @@
 import asyncio
 import json
 import logging
+import os
 from datetime import datetime
 from typing import Any, Optional
 
 from mcp import ClientSession, StdioServerParameters
 from pydantic_ai import Agent, RunContext
+from pydantic_ai.models.openai import OpenAIModel
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("tenderlens_agent")
@@ -21,6 +23,20 @@ class TenderLensAgent:
         self.mcp_session: Optional[ClientSession] = None
         self.agent: Optional[Agent] = None
 
+        # Use Groq for cloud deployment (free, fast)
+        # Set GROQ_API_KEY environment variable, or use placeholder
+        groq_api_key = os.getenv("GROQ_API_KEY", "")
+        if groq_api_key:
+            self.model = OpenAIModel(
+                "groq/llama-3.3-70b-versatile",
+                base_url="https://api.groq.com/openai/v1",
+                api_key=groq_api_key,
+            )
+        else:
+            # Fallback to local model if no API key
+            logger.warning("GROQ_API_KEY not set, using local model placeholder")
+            self.model = "qwen2.5:7b"  # Will fail without Ollama, used as placeholder
+
     async def connect_mcp(self) -> None:
         """Connect to the custom MCP server."""
         server_params = StdioServerParameters(
@@ -33,7 +49,7 @@ class TenderLensAgent:
 
         # Initialize the agent with MCP tools
         self.agent = Agent(
-            "qwen2.5:7b",
+            self.model,
             system_prompt=(
                 "You are TenderLens, an agentic AI that helps users discover and understand "
                 "public procurement opportunities in Kenya. You fetch tender data from OCDS sources, "

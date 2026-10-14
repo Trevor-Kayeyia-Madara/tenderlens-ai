@@ -96,11 +96,15 @@ TenderLens uses a **dual-agent architecture** orchestrated by Pydantic AI:
 - **Indexes**: Composite index on (deadline, buyer_location) for fast queries
 - **Deduplication**: PRIMARY KEY on notice_id prevents duplicates
 
-### Agent ↔ LLM (Qwen 2.5 7B)
-- **Protocol**: Ollama HTTP API
+### Agent ↔ LLM
+- **Local**: Qwen 2.5 7B via Ollama (for in-country data processing)
+- **Cloud**: Llama 3.3 70B via Groq (for global deployment, free API)
+- **Protocol**: Ollama HTTP API or Groq OpenAI-compatible API
 - **Purpose**: Agent reasoning for workflow planning and error recovery
-- **Latency**: ~500ms per inference on local hardware
-- **Why open-weights**: Procurement data must stay in-country
+- **Latency**:
+  - Local: ~500ms per inference on local hardware
+  - Cloud: ~100ms per inference via Groq
+- **Why open-weights**: Procurement data can stay in-country (local) or use fast cloud inference (Groq)
 
 ## Error Recovery
 
@@ -122,9 +126,9 @@ TenderLens uses a **dual-agent architecture** orchestrated by Pydantic AI:
 ## Security Considerations
 
 ### Data Sovereignty
-- All tender data processed locally on user's machine
-- No API calls to external LLM providers (uses local Ollama)
-- Procurement data never leaves Kenya
+- **Local deployment**: All tender data processed locally on user's machine with Ollama
+- **Cloud deployment**: Tender data stored locally, only LLM inference uses Groq (prompt metadata sent)
+- Procurement data never leaves Kenya when using local Ollama deployment
 
 ### SQL Injection
 - Parameterized queries in SQLite MCP server
