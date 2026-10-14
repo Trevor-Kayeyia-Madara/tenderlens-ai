@@ -9,6 +9,22 @@ from datetime import datetime
 import httpx
 import streamlit as st
 
+# Custom CSS for better styling
+st.markdown("""
+<style>
+    .stContainer {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 10px 0;
+        background-color: #f9f9f9;
+    }
+    h3 {
+        color: #1f77b4;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("tenderlens_ui")
 
@@ -184,7 +200,25 @@ with tab1:
                     tenders = fetch_ocds_data(limit=limit)
                     stored = store_tenders(tenders)
                     st.success(f"Loaded {stored} tenders successfully")
-                    st.json(tenders[:3])  # Show first 3 as preview
+
+                    # Show tenders as cards
+                    st.subheader("Recently Loaded Tenders")
+                    for tender in tenders[:5]:
+                        st.markdown('<div class="stContainer">', unsafe_allow_html=True)
+                        col1, col2 = st.columns([3, 1])
+                        with col1:
+                            st.markdown(f"### {tender.get('title', 'No title')}")
+                            st.markdown(f"**Organization:** {tender.get('buyer_name', 'Unknown')}")
+                            st.markdown(f"**Location:** {tender.get('buyer_location', 'Not specified')}")
+                            st.markdown(f"**Deadline:** {tender.get('deadline', 'Not specified')}")
+                            st.markdown(f"**Value:** KES {tender.get('value', 0):,}")
+                        with col2:
+                            status = tender.get('status', 'unknown')
+                            if status == 'active':
+                                st.success(f"Status: {status.upper()}")
+                            else:
+                                st.info(f"Status: {status.upper()}")
+                        st.markdown('</div>', unsafe_allow_html=True)
                 except Exception as e:
                     st.error(f"Loading failed: {e}")
 
@@ -196,10 +230,13 @@ with tab1:
         total = cursor.fetchone()[0]
         cursor.execute("SELECT COUNT(*) FROM tenders WHERE status = 'active'")
         active = cursor.fetchone()[0]
+        cursor.execute("SELECT SUM(value) FROM tenders")
+        total_value = cursor.fetchone()[0] or 0
         conn.close()
 
         st.metric("Total Tenders", total)
         st.metric("Active Tenders", active)
+        st.metric("Total Value", f"KES {total_value:,.0f}")
 
 with tab2:
     st.header("Search Tenders")
@@ -234,8 +271,24 @@ with tab2:
 
                 if results:
                     for tender in results:
-                        with st.expander(f"{tender.get('title', 'No title')} - {tender.get('buyer_name', 'Unknown')}"):
-                            st.json(tender)
+                        st.markdown('<div class="stContainer">', unsafe_allow_html=True)
+                        col1, col2 = st.columns([3, 1])
+                        with col1:
+                            st.markdown(f"### {tender.get('title', 'No title')}")
+                            st.markdown(f"**Organization:** {tender.get('buyer_name', 'Unknown')}")
+                            st.markdown(f"**Location:** {tender.get('buyer_location', 'Not specified')}")
+                            st.markdown(f"**Deadline:** {tender.get('deadline', 'Not specified')}")
+                            st.markdown(f"**Value:** KES {tender.get('value', 0):,}")
+                            if tender.get('description'):
+                                with st.expander("Description"):
+                                    st.markdown(tender.get('description'))
+                        with col2:
+                            status = tender.get('status', 'unknown')
+                            if status == 'active':
+                                st.success(f"Status: {status.upper()}")
+                            else:
+                                st.info(f"Status: {status.upper()}")
+                        st.markdown('</div>', unsafe_allow_html=True)
                 else:
                     st.warning("No tenders found matching your criteria")
             except Exception as e:
