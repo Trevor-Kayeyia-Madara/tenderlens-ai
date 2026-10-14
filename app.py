@@ -15,23 +15,23 @@ logger = logging.getLogger("tenderlens_ui")
 # Configure Streamlit page
 st.set_page_config(
     page_title="TenderLens - Kenya's Public Procurement Portal",
-    page_icon="🔍",
     layout="wide",
 )
 
-st.title("🔍 TenderLens")
+st.title("TenderLens")
 st.markdown(
     """
-    **Agentic AI for Kenya's Public Procurement Transparency**
+    **Kenya's Public Procurement Information System**
 
-    TenderLens makes Kenya's OCDS procurement data accessible to small suppliers, citizens,
-    and civil society organizations. Find tender opportunities, track awards, and understand
-    public spending patterns.
+    TenderLens makes government tender information accessible to small businesses, citizens,
+    and organizations. Find tender opportunities, track awards, and understand public spending.
+
+    This system organizes tender information for easy access and review.
     """
 )
 
 # Sidebar for controls
-st.sidebar.header("Controls")
+st.sidebar.header("Menu")
 
 # Database setup
 def init_db():
@@ -167,7 +167,7 @@ if "db_initialized" not in st.session_state:
     st.session_state.db_initialized = init_db()
 
 # Main tabs
-tab1, tab2 = st.tabs(["📊 Dashboard", "🔍 Search Tenders"])
+tab1, tab2 = st.tabs(["Dashboard", "Search Tenders"])
 
 with tab1:
     st.header("Dashboard")
@@ -175,18 +175,18 @@ with tab1:
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("Ingest New Tenders")
-        limit = st.number_input("Number of tenders to fetch", min_value=1, max_value=100, value=10)
+        st.subheader("Load New Tenders")
+        limit = st.number_input("Number of tenders to load", min_value=1, max_value=100, value=10)
 
-        if st.button("Start Ingestion"):
-            with st.spinner("Ingesting tenders..."):
+        if st.button("Load Tenders"):
+            with st.spinner("Loading tenders..."):
                 try:
                     tenders = fetch_ocds_data(limit=limit)
                     stored = store_tenders(tenders)
-                    st.success(f"Ingested {stored} tenders successfully")
+                    st.success(f"Loaded {stored} tenders successfully")
                     st.json(tenders[:3])  # Show first 3 as preview
                 except Exception as e:
-                    st.error(f"Ingestion failed: {e}")
+                    st.error(f"Loading failed: {e}")
 
     with col2:
         st.subheader("Statistics")
@@ -215,8 +215,8 @@ with tab2:
         date_to = st.date_input("Deadline to")
 
     with col3:
-        min_value = st.number_input("Min value (KES)", min_value=0.0, value=0.0)
-        max_value = st.number_input("Max value (KES)", min_value=0.0, value=0.0)
+        min_value = st.number_input("Minimum value (KES)", min_value=0.0, value=0.0)
+        max_value = st.number_input("Maximum value (KES)", min_value=0.0, value=0.0)
 
     if st.button("Search"):
         with st.spinner("Searching..."):
@@ -245,9 +245,10 @@ with tab2:
 st.divider()
 st.markdown(
     """
-    **Human-in-the-Loop**: TenderLens prepares information for review but never evaluates bids or awards tenders.
-    All tender decisions are made by human procurement committees.
+    **Important**: TenderLens only organizes and displays tender information for your review.
+    It does not evaluate bids, make recommendations, or award tenders.
+    All procurement decisions are made by human committees.
 
-    **Built with**: MCP + Pydantic AI + SQLite + Streamlit
+    **Technology**: Artificial Intelligence tools and database systems
     """
 )
