@@ -34,10 +34,9 @@ st.set_page_config(
     layout="wide",
 )
 
-st.title("TenderLens")
 st.markdown(
     """
-    **Kenya's Public Procurement Information System**
+    ## Kenya's Public Procurement Information System
 
     TenderLens makes government tender information accessible to small businesses, citizens,
     and organizations. Find tender opportunities, track awards, and understand public spending.
@@ -47,7 +46,36 @@ st.markdown(
 )
 
 # Sidebar for controls
-st.sidebar.header("Menu")
+st.sidebar.markdown("# TenderLens")
+st.sidebar.markdown("Kenya's Procurement Information System")
+st.sidebar.markdown("---")
+st.sidebar.subheader("Navigation")
+st.sidebar.markdown("""
+Use the tabs above to navigate:
+- **Dashboard**: Load new tenders and view statistics
+- **Search Tenders**: Find tenders matching your criteria
+""")
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("About")
+st.sidebar.markdown("""
+**TenderLens** helps you find government tender opportunities in Kenya.
+
+Use this system to:
+- Search for tenders by location and category
+- Filter by deadline and contract value
+- Track award patterns
+""")
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("Quick Links")
+st.sidebar.markdown("""
+- [Kenya e-Procurement Portal](https://tenders.go.ke)
+- [Public Procurement Regulatory Authority](https://ppra.go.ke)
+""")
+
+st.sidebar.markdown("---")
+st.sidebar.info("This system only displays information. All procurement decisions are made by human committees.")
 
 # Database setup
 def init_db():
