@@ -2,7 +2,6 @@
 
 Agentic AI for Kenya's Public Procurement Transparency - making tender opportunities accessible to small suppliers, citizens, and civil society organizations.
 
-Built for the [Agentic AI for Africa Innovation Challenge](https://agentic-africa-challenge.lovable.app/tracks/governance).
 
 ## Problem Statement
 
